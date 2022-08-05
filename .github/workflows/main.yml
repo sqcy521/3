@@ -1,0 +1,28 @@
+名称：同步源仓库
+上：
+  时间表：
+    - cron：' 1 0,15 * * * '
+  工作流调度：
+  观看：
+    类型：开始
+  存储库调度：
+    类型：同步源仓库
+工作：
+  回购同步：
+    环境：
+      PAT : ${{ 秘密.PAT || github.event.client_payload.PAT }}
+    运行：ubuntu-latest
+    如果：github.event.repository.owner.id == github.event.sender.id || github.actor == 'BlueSkyClouds'
+    步骤：
+      -使用：actions/checkout@v2
+        与：
+          持久凭证：假
+
+      -名称：同步脚本
+        用途：repo-sync/github-sync@v2
+        如果：env.PAT
+        与：
+          source_repo：“ https://github.com/MayoBlueSky/My-Actions.git ”
+          源分支：“主”
+          目的地分支：“主人”
+          github_token : ${{ 秘密.PAT || github.event.client_payload.PAT }}
